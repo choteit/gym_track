@@ -1,0 +1,52 @@
+[
+    {
+        "name": "Chest Press",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Squat",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Deadlift",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Bench Press",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Pull Up",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Running",
+        "category": "cardio",
+        "unitType": "time_distance"
+    },
+    {
+        "name": "Cycling",
+        "category": "cardio",
+        "unitType": "time_distance"
+    },
+    {
+        "name": "Rowing",
+        "category": "cardio",
+        "unitType": "time_distance"
+    },
+    {
+        "name": "Plank",
+        "category": "core",
+        "unitType": "time_distance"
+    },
+    {
+        "name": "Lunges",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    }
+]
