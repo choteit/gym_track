@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.add),
-              label: const Text('New session'),
+              label: const Text('Start a new session'),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
