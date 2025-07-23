@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../services/session_service.dart';
 
 class SessionList extends StatelessWidget {
@@ -14,6 +15,8 @@ class SessionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dateFormat = DateFormat('MMMM d, y');
+
     return StreamBuilder<QuerySnapshot>(
       stream: sessionService.getUserSessions(userId),
       builder: (context, snapshot) {
@@ -24,7 +27,7 @@ class SessionList extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const Center(
             child: Text(
-              'No session yet.',
+              'No session yet',
               style: TextStyle(color: Colors.grey),
             ),
           );
@@ -36,12 +39,34 @@ class SessionList extends StatelessWidget {
           itemBuilder: (context, index) {
             final session = sessions[index];
             final date = (session['date'] as Timestamp).toDate();
+            final exercises =
+                List<Map<String, dynamic>>.from(session['exercises'] ?? []);
+
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
-                title:
-                    Text('Session of ${date.day}/${date.month}/${date.year}'),
-                subtitle: Text('ID: ${session.id}'),
+                title: Text(dateFormat.format(date)),
+                subtitle: exercises.isEmpty
+                    ? const Text(
+                        'No exercise',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )
+                    : Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: exercises.map((exercise) {
+                          return Chip(
+                            label: Text(
+                              exercise['name'] as String,
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                            backgroundColor:
+                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          );
+                        }).toList(),
+                      ),
               ),
             );
           },

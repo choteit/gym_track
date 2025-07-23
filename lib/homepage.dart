@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
-import 'sessions/widgets/create_session_form.dart';
 import 'sessions/services/session_service.dart';
 import 'users/services/auth_service.dart';
 import 'sessions/widgets/session_list.dart';
+import 'sessions/widgets/create_session_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  Future<void> _showCreateSessionDialog(
+    BuildContext context,
+    String userId,
+    SessionService sessionService,
+  ) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => CreateSessionDialog(
+        userId: userId,
+        sessionService: sessionService,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +45,10 @@ class HomePage extends StatelessWidget {
           ElevatedButton.icon(
             icon: const Icon(Icons.add),
             label: const Text('New session'),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SessionFormPage(),
-                ),
-              );
-            },
+            onPressed: user != null
+                ? () =>
+                    _showCreateSessionDialog(context, user.uid, sessionService)
+                : null,
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(200, 48),
             ),
