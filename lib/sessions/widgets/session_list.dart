@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../services/session_service.dart';
+import 'session_detail_page.dart';
 
 class SessionList extends StatelessWidget {
   final String userId;
@@ -67,6 +68,17 @@ class SessionList extends StatelessWidget {
                           );
                         }).toList(),
                       ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SessionDetailPage(
+                        sessionId: session.id,
+                        sessionService: sessionService,
+                      ),
+                    ),
+                  );
+                },
               ),
             );
           },
