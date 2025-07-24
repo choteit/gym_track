@@ -73,6 +73,65 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     }
   }
 
+  Future<void> _editSessionDate() async {
+    DateTime selectedDate = DateTime.now();
+
+    final DateTime? pickedDate = await showDialog<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Edit session date',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 300,
+                  child: CalendarDatePicker(
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                    onDateChanged: (DateTime value) {
+                      selectedDate = value;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, selectedDate),
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      await widget.sessionService
+          .updateSessionDate(widget.sessionId, pickedDate);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,13 +158,29 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                 PopupMenuButton<String>(
                   icon: const Icon(Icons.more_vert),
                   onSelected: (value) {
-                    if (value == 'delete') {
-                      _deleteSession();
+                    switch (value) {
+                      case 'edit':
+                        _editSessionDate();
+                        break;
+                      case 'delete':
+                        _deleteSession();
+                        break;
                     }
                   },
                   position: PopupMenuPosition.under,
                   offset: const Offset(0, 0),
                   itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit,
+                              color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 8),
+                          const Text('Edit session'),
+                        ],
+                      ),
+                    ),
                     const PopupMenuItem<String>(
                       value: 'delete',
                       child: Row(

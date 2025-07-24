@@ -41,4 +41,10 @@ class SessionService {
   Future<void> deleteSession(String sessionId) async {
     await _firestore.collection('sessions').doc(sessionId).delete();
   }
+
+  Future<void> updateSessionDate(String sessionId, DateTime newDate) async {
+    await _firestore.collection('sessions').doc(sessionId).update({
+      'date': newDate,
+    });
+  }
 }
