@@ -59,12 +59,16 @@ class SessionList extends StatelessWidget {
                           return Chip(
                             label: Text(
                               exercise['name'] as String,
-                              style: const TextStyle(fontSize: 10),
+                              style: const TextStyle(fontSize: 12),
                             ),
                             backgroundColor:
                                 Theme.of(context).primaryColor.withOpacity(0.1),
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                            labelPadding:
+                                const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
                           );
                         }).toList(),
                       ),
