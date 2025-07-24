@@ -47,4 +47,19 @@ class SessionService {
       'date': newDate,
     });
   }
+
+  Future<void> removeExerciseFromSession(
+      String sessionId, int exerciseIndex) async {
+    final sessionRef = _firestore.collection('sessions').doc(sessionId);
+
+    return _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(sessionRef);
+      final exercises =
+          List<Map<String, dynamic>>.from(snapshot.get('exercises') ?? []);
+
+      exercises.removeAt(exerciseIndex);
+
+      transaction.update(sessionRef, {'exercises': exercises});
+    });
+  }
 }

@@ -1,52 +1,42 @@
 [
     {
-        "name": "Chest Press",
-        "category": "muscu",
-        "unitType": "reps_weight"
-    },
-    {
-        "name": "Squat",
-        "category": "muscu",
-        "unitType": "reps_weight"
-    },
-    {
-        "name": "Deadlift",
-        "category": "muscu",
-        "unitType": "reps_weight"
-    },
-    {
-        "name": "Bench Press",
-        "category": "muscu",
-        "unitType": "reps_weight"
-    },
-    {
-        "name": "Pull Up",
-        "category": "muscu",
-        "unitType": "reps_weight"
-    },
-    {
-        "name": "Running",
+        "name": "Elliptic",
         "category": "cardio",
         "unitType": "time_distance"
     },
     {
-        "name": "Cycling",
+        "name": "Treadmill",
         "category": "cardio",
         "unitType": "time_distance"
+    },
+    {
+        "name": "Leg Press",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Abdominal",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Rotary Torso",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Diverging Lat Pulldown",
+        "category": "muscu",
+        "unitType": "reps_weight"
+    },
+    {
+        "name": "Converging Chest Press",
+        "category": "muscu",
+        "unitType": "reps_weight"
     },
     {
         "name": "Rowing",
         "category": "cardio",
         "unitType": "time_distance"
-    },
-    {
-        "name": "Plank",
-        "category": "core",
-        "unitType": "time_distance"
-    },
-    {
-        "name": "Lunges",
-        "category": "muscu",
-        "unitType": "reps_weight"
     }
 ]

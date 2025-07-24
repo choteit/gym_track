@@ -221,7 +221,15 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   ),
                   const SizedBox(height: 16),
                   Expanded(
-                    child: ExercisesList(exercises: exercises),
+                    child: ExercisesList(
+                      exercises: exercises,
+                      onExerciseDeleted: (index) async {
+                        await widget.sessionService.removeExerciseFromSession(
+                          widget.sessionId,
+                          index,
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
