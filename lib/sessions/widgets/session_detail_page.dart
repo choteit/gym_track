@@ -46,9 +46,6 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Session Details'),
-      ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: _sessionStream,
         builder: (context, snapshot) {
@@ -65,35 +62,37 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
           final exercises =
               List<Map<String, dynamic>>.from(data['exercises'] ?? []);
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  dateFormat.format(date),
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    const Text(
-                      'Exercises:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add exercise'),
-                      onPressed: _addExerciseDialog,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ExercisesList(exercises: exercises),
-                ),
-              ],
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Session of ${dateFormat.format(date)}'),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Exercises',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add exercise'),
+                        onPressed: _addExerciseDialog,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ExercisesList(exercises: exercises),
+                  ),
+                ],
+              ),
             ),
           );
         },
