@@ -43,6 +43,36 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     );
   }
 
+  Future<void> _deleteSession() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Delete session'),
+        content: const Text('Are you sure you want to delete this session?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await widget.sessionService.deleteSession(widget.sessionId);
+      if (mounted) {
+        Navigator.pop(context); // Retour à la page d'accueil
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +95,33 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text('Session of ${dateFormat.format(date)}'),
+              actions: [
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    if (value == 'delete') {
+                      _deleteSession();
+                    }
+                  },
+                  position: PopupMenuPosition.under,
+                  offset: const Offset(0, 0),
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text(
+                            'Delete session',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),

@@ -37,4 +37,8 @@ class SessionService {
       transaction.update(sessionRef, {'exercises': exercises});
     });
   }
+
+  Future<void> deleteSession(String sessionId) async {
+    await _firestore.collection('sessions').doc(sessionId).delete();
+  }
 }
