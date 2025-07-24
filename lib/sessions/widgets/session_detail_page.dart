@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../services/session_service.dart';
+import '../../exercises/widgets/add_exercise_dialog.dart';
 
 class SessionDetailPage extends StatefulWidget {
   final String sessionId;
@@ -28,7 +29,17 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
   }
 
   Future<void> _addExerciseDialog() async {
-    // Même code que précédemment pour l'ajout d'exercice
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => AddExerciseDialog(
+        onExerciseAdded: (exercise) async {
+          await widget.sessionService.addExerciseToSession(
+            widget.sessionId,
+            exercise,
+          );
+        },
+      ),
+    );
   }
 
   @override
