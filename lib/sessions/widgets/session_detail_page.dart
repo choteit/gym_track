@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../services/session_service.dart';
 import '../../exercises/widgets/add_exercise_dialog.dart';
+import '../../exercises/widgets/exercises_list.dart';
 
 class SessionDetailPage extends StatefulWidget {
   final String sessionId;
@@ -90,27 +91,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                 ),
                 const SizedBox(height: 16),
                 Expanded(
-                  child: exercises.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No exercises added yet',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: exercises.length,
-                          itemBuilder: (context, index) {
-                            final exercise = exercises[index];
-                            return Card(
-                              child: ListTile(
-                                title: Text(exercise['name']),
-                                subtitle: Text(
-                                  'Category: ${exercise['category']} - Type: ${exercise['unitType']}',
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                  child: ExercisesList(exercises: exercises),
                 ),
               ],
             ),
