@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'users/services/auth_gate.dart';
-import 'main_navigation.dart';
 import 'utils/firebase_options.dart';
 import 'utils/app_theme.dart';
 
