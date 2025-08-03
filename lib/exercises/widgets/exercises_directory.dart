@@ -50,7 +50,17 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Exercises'),
+        title: Row(
+          children: [
+            Icon(
+              Icons.list_alt,
+              color: Theme.of(context).colorScheme.primary,
+              size: 24,
+            ),
+            const SizedBox(width: 8),
+            const Text('Exercise Library'),
+          ],
+        ),
       ),
       body: ListView.builder(
         itemCount: _exercises.length,

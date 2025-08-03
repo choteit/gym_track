@@ -14,9 +14,29 @@ class ExercisesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return exercises.isEmpty
         ? Center(
-            child: Text(
-              'No exercises added yet',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add_circle_outline,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No exercises added yet',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add your first exercise to get started',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           )
         : ListView.builder(
