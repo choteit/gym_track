@@ -56,9 +56,9 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
+            child: Text(
               'Delete',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],
@@ -175,21 +175,21 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                       child: Row(
                         children: [
                           Icon(Icons.edit,
-                              color: Theme.of(context).primaryColor),
+                              color: Theme.of(context).colorScheme.primary),
                           const SizedBox(width: 8),
                           const Text('Edit session'),
                         ],
                       ),
                     ),
-                    const PopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: 'delete',
                       child: Row(
                         children: [
-                          Icon(Icons.delete, color: Colors.red),
-                          SizedBox(width: 8),
+                          Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                          const SizedBox(width: 8),
                           Text(
                             'Delete session',
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: Theme.of(context).colorScheme.error),
                           ),
                         ],
                       ),

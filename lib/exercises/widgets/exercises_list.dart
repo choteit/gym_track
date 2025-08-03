@@ -13,10 +13,10 @@ class ExercisesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return exercises.isEmpty
-        ? const Center(
+        ? Center(
             child: Text(
               'No exercises added yet',
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           )
         : ListView.builder(
@@ -29,10 +29,10 @@ class ExercisesList extends StatelessWidget {
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 16.0),
-                  color: Colors.red,
-                  child: const Icon(
+                  color: Theme.of(context).colorScheme.error,
+                  child: Icon(
                     Icons.delete,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onError,
                   ),
                 ),
                 confirmDismiss: (direction) async {
@@ -49,9 +49,9 @@ class ExercisesList extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          child: const Text(
+                          child: Text(
                             'Delete',
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: Theme.of(context).colorScheme.error),
                           ),
                         ),
                       ],

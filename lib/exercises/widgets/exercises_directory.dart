@@ -63,12 +63,12 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
               key: Key(exercise['id']),
               direction: DismissDirection.endToStart,
               background: Container(
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(right: 16.0),
-                child: const Icon(
+                child: Icon(
                   Icons.delete,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onError,
                 ),
               ),
               confirmDismiss: (direction) async {
@@ -85,9 +85,9 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: const Text(
+                            child: Text(
                               'Supprimer',
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(color: Theme.of(context).colorScheme.error),
                             ),
                           ),
                         ],
@@ -115,7 +115,7 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
                   subtitle: Text(
                     'Category: ${exercise['category']} • Type: ${exercise['unitType'] == 'reps_weight' ? 'Weight training' : 'Cardio'}',
                   ),
-                  trailing: const Icon(Icons.person, color: Colors.blue),
+                  trailing: Icon(Icons.person, color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             );

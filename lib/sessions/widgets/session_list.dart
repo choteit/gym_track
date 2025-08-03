@@ -26,10 +26,10 @@ class SessionList extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
               'No session yet',
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           );
         }
@@ -62,7 +62,7 @@ class SessionList extends StatelessWidget {
                               style: const TextStyle(fontSize: 12),
                             ),
                             backgroundColor:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                                Theme.of(context).colorScheme.primaryContainer,
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             visualDensity: VisualDensity.compact,
