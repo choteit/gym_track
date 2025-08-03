@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'users/services/auth_gate.dart';
 import 'main_navigation.dart';
 import 'utils/firebase_options.dart';
+import 'utils/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Gym Track',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: const AuthGate(),
     );
   }

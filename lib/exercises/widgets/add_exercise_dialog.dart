@@ -103,8 +103,8 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
                         Text(name[0].toUpperCase() + name.substring(1)),
                         if (exercise['isCustom'] == true) ...[
                           const SizedBox(width: 8),
-                          const Icon(Icons.person,
-                              color: Colors.blue, size: 16),
+                          Icon(Icons.person,
+                              color: Theme.of(context).colorScheme.secondary, size: 16),
                         ],
                       ],
                     ),

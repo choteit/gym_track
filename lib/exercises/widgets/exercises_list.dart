@@ -13,10 +13,30 @@ class ExercisesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return exercises.isEmpty
-        ? const Center(
-            child: Text(
-              'No exercises added yet',
-              style: TextStyle(color: Colors.grey),
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add_circle_outline,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No exercises added yet',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add your first exercise to get started',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           )
         : ListView.builder(
@@ -29,10 +49,10 @@ class ExercisesList extends StatelessWidget {
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 16.0),
-                  color: Colors.red,
-                  child: const Icon(
+                  color: Theme.of(context).colorScheme.error,
+                  child: Icon(
                     Icons.delete,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onError,
                   ),
                 ),
                 confirmDismiss: (direction) async {
@@ -49,9 +69,9 @@ class ExercisesList extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          child: const Text(
+                          child: Text(
                             'Delete',
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: Theme.of(context).colorScheme.error),
                           ),
                         ),
                       ],
