@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart';
+import '../services/exercise_service.dart';
+import '../../users/services/auth_service.dart';
 
 class AddExerciseDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onExerciseAdded;
@@ -15,6 +15,8 @@ class AddExerciseDialog extends StatefulWidget {
 }
 
 class _AddExerciseDialogState extends State<AddExerciseDialog> {
+  final _exerciseService = ExerciseService();
+  final _authService = AuthService();
   List<Map<String, dynamic>> _exercises = [];
   Map<String, dynamic>? _selectedExercise;
   final _formKey = GlobalKey<FormState>();
@@ -45,11 +47,13 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
   }
 
   Future<void> _loadExercises() async {
-    final String data =
-        await rootBundle.loadString('lib/assets/exercises.json');
-    setState(() {
-      _exercises = List<Map<String, dynamic>>.from(json.decode(data));
-    });
+    final userId = _authService.currentUser?.uid;
+    if (userId != null) {
+      final exercises = await _exerciseService.getAllExercises(userId);
+      setState(() {
+        _exercises = exercises;
+      });
+    }
   }
 
   void _submitForm() {
@@ -94,7 +98,16 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
                   final name = exercise['name'] as String;
                   return DropdownMenuItem(
                     value: exercise,
-                    child: Text(name[0].toUpperCase() + name.substring(1)),
+                    child: Row(
+                      children: [
+                        Text(name[0].toUpperCase() + name.substring(1)),
+                        if (exercise['isCustom'] == true) ...[
+                          const SizedBox(width: 8),
+                          const Icon(Icons.person,
+                              color: Colors.blue, size: 16),
+                        ],
+                      ],
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
