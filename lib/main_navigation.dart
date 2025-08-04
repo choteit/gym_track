@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'exercises/widgets/exercises_directory.dart';
+import 'workout_plans/widgets/workout_plans_page.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -14,6 +15,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
+    WorkoutPlansPage(),
     ExercisesDirectory(),
   ];
 
@@ -28,10 +30,15 @@ class _MainNavigationState extends State<MainNavigation> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
             label: 'Workouts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Plans',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt),
