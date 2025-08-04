@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/exercise_service.dart';
 import '../../users/services/auth_service.dart';
+import '../../utils/number_helper.dart';
 
 class AddExerciseDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onExerciseAdded;
@@ -63,9 +64,10 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
       if (exercise['unitType'] == 'reps_weight') {
         exercise['sets'] = int.parse(_setsController.text);
         exercise['reps'] = int.parse(_repsController.text);
-        exercise['weight'] = double.parse(_weightController.text);
+        exercise['weight'] = NumberHelper.parseDouble(_weightController.text);
       } else {
-        exercise['distance'] = double.parse(_distanceController.text);
+        exercise['distance'] =
+            NumberHelper.parseDouble(_distanceController.text);
         exercise['time'] = int.parse(_timeController.text);
       }
 
@@ -104,7 +106,8 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
                         if (exercise['isCustom'] == true) ...[
                           const SizedBox(width: 8),
                           Icon(Icons.person,
-                              color: Theme.of(context).colorScheme.secondary, size: 16),
+                              color: Theme.of(context).colorScheme.secondary,
+                              size: 16),
                         ],
                       ],
                     ),
@@ -172,20 +175,34 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
                     controller: _weightController,
                     decoration: const InputDecoration(
                       labelText: 'Weight (kg)',
+                      hintText: 'Ex: 75,5 ou 75.5',
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Enter weight' : null,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Enter weight';
+                      if (!NumberHelper.isValidDouble(value!)) {
+                        return 'Enter a valid number (ex: 75,5)';
+                      }
+                      return null;
+                    },
                   ),
                 ] else ...[
                   TextFormField(
                     controller: _distanceController,
                     decoration: const InputDecoration(
                       labelText: 'Distance (km)',
+                      hintText: 'Ex: 5,2 ou 5.2',
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Enter distance' : null,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    validator: (value) {
+                      if (value?.isEmpty ?? true) return 'Enter distance';
+                      if (!NumberHelper.isValidDouble(value!)) {
+                        return 'Enter a valid number (ex: 5,2)';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
