@@ -185,11 +185,13 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                       value: 'delete',
                       child: Row(
                         children: [
-                          Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                          Icon(Icons.delete,
+                              color: Theme.of(context).colorScheme.error),
                           const SizedBox(width: 8),
                           Text(
                             'Delete session',
-                            style: TextStyle(color: Theme.of(context).colorScheme.error),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.error),
                           ),
                         ],
                       ),
@@ -203,21 +205,11 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Exercises',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const Spacer(),
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add exercise'),
-                        onPressed: _addExerciseDialog,
-                      ),
-                    ],
+                  Text(
+                    'Exercises',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 16),
                   Expanded(
@@ -233,6 +225,11 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   ),
                 ],
               ),
+            ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: _addExerciseDialog,
+              icon: const Icon(Icons.add),
+              label: const Text('Add exercise'),
             ),
           );
         },

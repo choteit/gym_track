@@ -97,7 +97,8 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
                             onPressed: () => Navigator.pop(context, true),
                             child: Text(
                               'Supprimer',
-                              style: TextStyle(color: Theme.of(context).colorScheme.error),
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error),
                             ),
                           ),
                         ],
@@ -125,7 +126,8 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
                   subtitle: Text(
                     'Category: ${exercise['category']} • Type: ${exercise['unitType'] == 'reps_weight' ? 'Weight training' : 'Cardio'}',
                   ),
-                  trailing: Icon(Icons.person, color: Theme.of(context).colorScheme.secondary),
+                  trailing: Icon(Icons.person,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             );
@@ -146,9 +148,10 @@ class _ExercisesDirectoryState extends State<ExercisesDirectory> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddExerciseDialog,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add exercise'),
       ),
     );
   }
