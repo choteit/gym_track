@@ -30,14 +30,18 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.fitness_center,
               color: Theme.of(context).colorScheme.primary,
-              size: 24,
+              size: 30,
             ),
             const SizedBox(width: 8),
-            const Text('GymTrack'),
+            Text(
+              'GymTrack',
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
           ],
         ),
         actions: [
@@ -59,8 +63,8 @@ class HomePage extends StatelessWidget {
               icon: const Icon(Icons.add_circle_outline, size: 24),
               label: const Text('Start New Workout'),
               onPressed: user != null
-                  ? () =>
-                      _showCreateSessionDialog(context, user.uid, sessionService)
+                  ? () => _showCreateSessionDialog(
+                      context, user.uid, sessionService)
                   : null,
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 56),
@@ -87,9 +91,9 @@ class HomePage extends StatelessWidget {
                 Text(
                   'Your Workouts',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                 ),
               ],
             ),
