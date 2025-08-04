@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import '../services/session_service.dart';
 import '../../exercises/widgets/add_exercise_dialog.dart';
 import '../../exercises/widgets/exercises_list.dart';
+import '../../workout_plans/services/workout_plan_service.dart';
+import '../../workout_plans/entities/workout_plan.dart';
+import 'planned_exercises_list.dart';
 
 class SessionDetailPage extends StatefulWidget {
   final String sessionId;
@@ -22,11 +25,48 @@ class SessionDetailPage extends StatefulWidget {
 class _SessionDetailPageState extends State<SessionDetailPage> {
   late Stream<DocumentSnapshot> _sessionStream;
   final dateFormat = DateFormat('MMMM d, y');
+  final WorkoutPlanService _workoutPlanService = WorkoutPlanService();
+  WorkoutPlan? _workoutPlan;
 
   @override
   void initState() {
     super.initState();
     _sessionStream = widget.sessionService.getSessionById(widget.sessionId);
+  }
+
+  Future<void> _loadWorkoutPlan(String planId) async {
+    try {
+      final plan = await _workoutPlanService.getWorkoutPlanOnce(planId);
+      if (mounted) {
+        setState(() {
+          _workoutPlan = plan;
+        });
+      }
+    } catch (e) {
+      // Handle error silently
+    }
+  }
+
+  Future<void> _completeExercise(PlannedExercise exercise, int plannedIndex) async {
+    final completedExercise = {
+      'name': exercise.name,
+      'category': exercise.category,
+      'unitType': exercise.unitType,
+      'isPlanned': true,
+      'plannedIndex': plannedIndex,
+      'sets': <Map<String, dynamic>>[],
+      'targetSets': exercise.targetSets,
+      'targetReps': exercise.targetReps,
+      'targetWeight': exercise.targetWeight,
+      'targetTime': exercise.targetTime,
+      'targetDistance': exercise.targetDistance,
+      'completedAt': DateTime.now(),
+    };
+
+    await widget.sessionService.addExerciseToSession(
+      widget.sessionId,
+      completedExercise,
+    );
   }
 
   Future<void> _addExerciseDialog() async {
@@ -150,6 +190,12 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
           final date = (data['date'] as Timestamp).toDate();
           final exercises =
               List<Map<String, dynamic>>.from(data['exercises'] ?? []);
+          final workoutPlanId = data['workoutPlanId'] as String?;
+
+          // Load workout plan if it exists and we haven't loaded it yet
+          if (workoutPlanId != null && _workoutPlan == null) {
+            _loadWorkoutPlan(workoutPlanId);
+          }
 
           return Scaffold(
             appBar: AppBar(
@@ -205,20 +251,105 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Exercises',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  if (_workoutPlan != null) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                         ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.assignment,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Following Plan: ${_workoutPlan!.name}',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_workoutPlan!.description != null && _workoutPlan!.description!.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _workoutPlan!.description!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Planned Exercises',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    PlannedExercisesList(
+                      plannedExercises: _workoutPlan!.exercises,
+                      completedExercises: exercises,
+                      onExerciseCompleted: _completeExercise,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                  Row(
+                    children: [
+                      Text(
+                        _workoutPlan != null ? 'Additional Exercises' : 'Exercises',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      if (_workoutPlan != null) ...[
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ],
+                    ],
                   ),
+                  if (_workoutPlan != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Exercises added beyond your planned workout',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   Expanded(
                     child: ExercisesList(
-                      exercises: exercises,
+                      exercises: exercises.where((ex) => ex['isPlanned'] != true).toList(),
                       onExerciseDeleted: (index) async {
+                        // Find the actual index in the full exercises list
+                        final nonPlannedExercises = exercises.where((ex) => ex['isPlanned'] != true).toList();
+                        final exerciseToDelete = nonPlannedExercises[index];
+                        final actualIndex = exercises.indexOf(exerciseToDelete);
+                        
                         await widget.sessionService.removeExerciseFromSession(
                           widget.sessionId,
-                          index,
+                          actualIndex,
                         );
                       },
                     ),
