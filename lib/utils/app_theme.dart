@@ -2,23 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Gym-focused color palette with energy and motivation in mind
-  static const Color _primarySeed = Color(0xFF00695C); // Deep teal - energy & focus
-  static const Color _secondarySeed = Color(0xFFFF6F00); // Deep orange - motivation & strength
-  static const Color _tertiarySeed = Color(0xFF1565C0); // Deep blue - trust & stability
+  static const Color _primarySeed =
+      Color(0xFF00695C); // Deep teal - energy & focus
 
   // Generate Material 3 color scheme from seed colors
-  static final ColorScheme _lightColorScheme = ColorScheme.fromSeed(
-    seedColor: _primarySeed,
-    brightness: Brightness.light,
-    secondary: _secondarySeed,
-    tertiary: _tertiarySeed,
-  );
-
-  static final ColorScheme _darkColorScheme = ColorScheme.fromSeed(
+  static final ColorScheme _colorScheme = ColorScheme.fromSeed(
     seedColor: _primarySeed,
     brightness: Brightness.dark,
-    secondary: _secondarySeed,
-    tertiary: _tertiarySeed,
   );
 
   // Custom text theme for fitness app
@@ -100,25 +90,25 @@ class AppTheme {
     ),
   );
 
-  // Light theme configuration
-  static ThemeData get lightTheme {
+  // Main theme configuration (dark theme only)
+  static ThemeData get theme {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: _lightColorScheme,
+      colorScheme: _colorScheme,
       textTheme: _textTheme,
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
-        backgroundColor: _lightColorScheme.surface,
-        foregroundColor: _lightColorScheme.onSurface,
+        backgroundColor: _colorScheme.surface,
+        foregroundColor: _colorScheme.onSurface,
         elevation: 0,
         scrolledUnderElevation: 1,
         titleTextStyle: _textTheme.titleLarge?.copyWith(
-          color: _lightColorScheme.onSurface,
+          color: _colorScheme.onSurface,
           fontWeight: FontWeight.w600,
         ),
         iconTheme: IconThemeData(
-          color: _lightColorScheme.onSurface,
+          color: _colorScheme.onSurface,
         ),
       ),
 
@@ -128,15 +118,15 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        color: _lightColorScheme.surface,
-        surfaceTintColor: _lightColorScheme.surfaceTint,
+        color: _colorScheme.surface,
+        surfaceTintColor: _colorScheme.surfaceTint,
       ),
 
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: _lightColorScheme.primary,
-          foregroundColor: _lightColorScheme.onPrimary,
+          backgroundColor: _colorScheme.primary,
+          foregroundColor: _colorScheme.onPrimary,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
@@ -150,8 +140,8 @@ class AppTheme {
 
       // Floating Action Button Theme
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: _lightColorScheme.primary,
-        foregroundColor: _lightColorScheme.onPrimary,
+        backgroundColor: _colorScheme.primary,
+        foregroundColor: _colorScheme.onPrimary,
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -160,9 +150,9 @@ class AppTheme {
 
       // Chip Theme
       chipTheme: ChipThemeData(
-        backgroundColor: _lightColorScheme.primaryContainer,
+        backgroundColor: _colorScheme.primaryContainer,
         labelStyle: _textTheme.labelMedium?.copyWith(
-          color: _lightColorScheme.onPrimaryContainer,
+          color: _colorScheme.onPrimaryContainer,
         ),
         side: BorderSide.none,
         shape: RoundedRectangleBorder(
@@ -172,9 +162,9 @@ class AppTheme {
 
       // Bottom Navigation Bar Theme
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: _lightColorScheme.surface,
-        selectedItemColor: _lightColorScheme.primary,
-        unselectedItemColor: _lightColorScheme.onSurfaceVariant,
+        backgroundColor: _colorScheme.surface,
+        selectedItemColor: _colorScheme.primary,
+        unselectedItemColor: _colorScheme.onSurfaceVariant,
         type: BottomNavigationBarType.fixed,
         elevation: 3,
         selectedLabelStyle: _textTheme.labelSmall?.copyWith(
@@ -185,29 +175,29 @@ class AppTheme {
 
       // Dialog Theme
       dialogTheme: DialogThemeData(
-        backgroundColor: _lightColorScheme.surface,
-        surfaceTintColor: _lightColorScheme.surfaceTint,
+        backgroundColor: _colorScheme.surface,
+        surfaceTintColor: _colorScheme.surfaceTint,
         elevation: 6,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
         titleTextStyle: _textTheme.headlineSmall?.copyWith(
-          color: _lightColorScheme.onSurface,
+          color: _colorScheme.onSurface,
         ),
         contentTextStyle: _textTheme.bodyMedium?.copyWith(
-          color: _lightColorScheme.onSurfaceVariant,
+          color: _colorScheme.onSurfaceVariant,
         ),
       ),
 
       // List Tile Theme
       listTileTheme: ListTileThemeData(
         titleTextStyle: _textTheme.bodyLarge?.copyWith(
-          color: _lightColorScheme.onSurface,
+          color: _colorScheme.onSurface,
         ),
         subtitleTextStyle: _textTheme.bodyMedium?.copyWith(
-          color: _lightColorScheme.onSurfaceVariant,
+          color: _colorScheme.onSurfaceVariant,
         ),
-        iconColor: _lightColorScheme.primary,
+        iconColor: _colorScheme.primary,
         dense: false,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
@@ -215,156 +205,21 @@ class AppTheme {
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: _lightColorScheme.surfaceVariant.withOpacity(0.4),
+        fillColor: _colorScheme.surfaceVariant.withOpacity(0.4),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _lightColorScheme.outline),
+          borderSide: BorderSide(color: _colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _lightColorScheme.outline),
+          borderSide: BorderSide(color: _colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _lightColorScheme.primary, width: 2),
+          borderSide: BorderSide(color: _colorScheme.primary, width: 2),
         ),
         labelStyle: _textTheme.bodyMedium?.copyWith(
-          color: _lightColorScheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-
-  // Dark theme configuration
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: _darkColorScheme,
-      textTheme: _textTheme,
-      
-      // App Bar Theme
-      appBarTheme: AppBarTheme(
-        backgroundColor: _darkColorScheme.surface,
-        foregroundColor: _darkColorScheme.onSurface,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        titleTextStyle: _textTheme.titleLarge?.copyWith(
-          color: _darkColorScheme.onSurface,
-          fontWeight: FontWeight.w600,
-        ),
-        iconTheme: IconThemeData(
-          color: _darkColorScheme.onSurface,
-        ),
-      ),
-
-      // Card Theme
-      cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        color: _darkColorScheme.surface,
-        surfaceTintColor: _darkColorScheme.surfaceTint,
-      ),
-
-      // Elevated Button Theme
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _darkColorScheme.primary,
-          foregroundColor: _darkColorScheme.onPrimary,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: _textTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-
-      // Floating Action Button Theme
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: _darkColorScheme.primary,
-        foregroundColor: _darkColorScheme.onPrimary,
-        elevation: 3,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-
-      // Chip Theme
-      chipTheme: ChipThemeData(
-        backgroundColor: _darkColorScheme.primaryContainer,
-        labelStyle: _textTheme.labelMedium?.copyWith(
-          color: _darkColorScheme.onPrimaryContainer,
-        ),
-        side: BorderSide.none,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-
-      // Bottom Navigation Bar Theme
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: _darkColorScheme.surface,
-        selectedItemColor: _darkColorScheme.primary,
-        unselectedItemColor: _darkColorScheme.onSurfaceVariant,
-        type: BottomNavigationBarType.fixed,
-        elevation: 3,
-        selectedLabelStyle: _textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-        unselectedLabelStyle: _textTheme.labelSmall,
-      ),
-
-      // Dialog Theme
-      dialogTheme: DialogThemeData(
-        backgroundColor: _darkColorScheme.surface,
-        surfaceTintColor: _darkColorScheme.surfaceTint,
-        elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        titleTextStyle: _textTheme.headlineSmall?.copyWith(
-          color: _darkColorScheme.onSurface,
-        ),
-        contentTextStyle: _textTheme.bodyMedium?.copyWith(
-          color: _darkColorScheme.onSurfaceVariant,
-        ),
-      ),
-
-      // List Tile Theme
-      listTileTheme: ListTileThemeData(
-        titleTextStyle: _textTheme.bodyLarge?.copyWith(
-          color: _darkColorScheme.onSurface,
-        ),
-        subtitleTextStyle: _textTheme.bodyMedium?.copyWith(
-          color: _darkColorScheme.onSurfaceVariant,
-        ),
-        iconColor: _darkColorScheme.primary,
-        dense: false,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      ),
-
-      // Input Decoration Theme
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: _darkColorScheme.surfaceVariant.withOpacity(0.4),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _darkColorScheme.outline),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _darkColorScheme.outline),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _darkColorScheme.primary, width: 2),
-        ),
-        labelStyle: _textTheme.bodyMedium?.copyWith(
-          color: _darkColorScheme.onSurfaceVariant,
+          color: _colorScheme.onSurfaceVariant,
         ),
       ),
     );
