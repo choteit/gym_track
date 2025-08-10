@@ -94,74 +94,94 @@ class WorkoutPlansPage extends StatelessWidget {
                 : StreamBuilder<QuerySnapshot>(
                     stream: workoutPlanService.getUserWorkoutPlans(user.uid),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Afficher le loading seulement si on n'a jamais eu de données
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          !snapshot.hasData) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            'No workout plans yet.\nCreate your first plan to get started!',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16),
+                      if (snapshot.hasError) {
+                        print(snapshot.error);
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error,
+                                  size: 64, color: Colors.red),
+                              const SizedBox(height: 16),
+                              const Text('Error loading workout plans'),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Force rebuild
+                                  (context as Element).markNeedsBuild();
+                                },
+                                child: const Text('Retry'),
+                              ),
+                            ],
                           ),
                         );
                       }
 
-                      final plans = snapshot.data!.docs;
+                      // Toujours utiliser la dernière donnée disponible
+                      if (snapshot.hasData) {
+                        final plans = snapshot.data!.docs;
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: plans.length,
-                        itemBuilder: (context, index) {
-                          final planData = plans[index].data() as Map<String, dynamic>;
-                          final plan = WorkoutPlan.fromMap(plans[index].id, planData);
-
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                                child: Icon(
-                                  Icons.assignment,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                              title: Text(
-                                plan.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (plan.description != null && plan.description!.isNotEmpty)
-                                    Text(plan.description!),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${plan.exercises.length} exercise${plan.exercises.length != 1 ? 's' : ''}',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => WorkoutPlanDetailPage(
-                                      planId: plan.id,
-                                      workoutPlanService: workoutPlanService,
-                                    ),
-                                  ),
-                                );
-                              },
+                        if (plans.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'No workout plans yet.\nCreate your first plan to get started!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16),
                             ),
                           );
-                        },
-                      );
+                        }
+
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: plans.length,
+                          itemBuilder: (context, index) {
+                            final planData =
+                                plans[index].data() as Map<String, dynamic>;
+                            final plan =
+                                WorkoutPlan.fromMap(plans[index].id, planData);
+
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  child: Icon(
+                                    Icons.assignment,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                                title: Text(plan.name),
+                                subtitle:
+                                    Text('${plan.exercises.length} exercises'),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          WorkoutPlanDetailPage(
+                                        planId: plan.id,
+                                        workoutPlanService: workoutPlanService,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      // Fallback si aucune donnée n'est disponible
+                      return const Center(child: CircularProgressIndicator());
                     },
                   ),
           ),

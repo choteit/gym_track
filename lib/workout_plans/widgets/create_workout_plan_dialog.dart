@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/workout_plan_service.dart';
 import '../entities/workout_plan.dart';
-import '../../exercises/services/exercise_service.dart';
+import '../../exercises/widgets/exercise_selector.dart';
 
 class CreateWorkoutPlanDialog extends StatefulWidget {
   final String userId;
@@ -14,7 +14,8 @@ class CreateWorkoutPlanDialog extends StatefulWidget {
   });
 
   @override
-  State<CreateWorkoutPlanDialog> createState() => _CreateWorkoutPlanDialogState();
+  State<CreateWorkoutPlanDialog> createState() =>
+      _CreateWorkoutPlanDialogState();
 }
 
 class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
@@ -31,15 +32,10 @@ class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
   }
 
   Future<void> _addExerciseToplan() async {
-    final exerciseService = ExerciseService();
-    final exercises = await exerciseService.getAllExercises(widget.userId);
-
-    if (!mounted) return;
-
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) => AddPlannedExerciseDialog(
-        exercises: exercises,
+        userId: widget.userId,
         onExerciseAdded: (plannedExercise) {
           setState(() {
             _plannedExercises.add(plannedExercise);
@@ -56,8 +52,8 @@ class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
       id: '', // Will be set by Firestore
       userId: widget.userId,
       name: _nameController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty 
-          ? null 
+      description: _descriptionController.text.trim().isEmpty
+          ? null
           : _descriptionController.text.trim(),
       createdAt: DateTime.now(),
       exercises: _plannedExercises,
@@ -94,8 +90,8 @@ class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
             Text(
               'Create Workout Plan',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 20),
             Form(
@@ -136,8 +132,8 @@ class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
                 Text(
                   'Exercises (${_plannedExercises.length})',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 TextButton.icon(
                   onPressed: _addExerciseToplan,
@@ -202,36 +198,41 @@ class _CreateWorkoutPlanDialogState extends State<CreateWorkoutPlanDialog> {
 
   String _getExerciseTargetText(PlannedExercise exercise) {
     if (exercise.unitType == 'reps_weight') {
-      final setsText = exercise.targetSets != null ? '${exercise.targetSets} sets' : '';
-      final repsText = exercise.targetReps != null ? '${exercise.targetReps} reps' : '';
-      final weightText = exercise.targetWeight != null ? '${exercise.targetWeight}kg' : '';
-      
-      return [setsText, repsText, weightText].where((s) => s.isNotEmpty).join(' × ');
+      final setsText =
+          exercise.targetSets != null ? '${exercise.targetSets} sets' : '';
+      final repsText =
+          exercise.targetReps != null ? '${exercise.targetReps} reps' : '';
+      final weightText =
+          exercise.targetWeight != null ? '${exercise.targetWeight}kg' : '';
+
+      return [setsText, repsText, weightText]
+          .where((s) => s.isNotEmpty)
+          .join(' × ');
     } else {
-      final timeText = exercise.targetTime != null 
-          ? '${(exercise.targetTime! / 60).toStringAsFixed(0)}min' 
+      final timeText = exercise.targetTime != null
+          ? '${(exercise.targetTime! / 60).toStringAsFixed(0)}min'
           : '';
-      final distanceText = exercise.targetDistance != null 
-          ? '${exercise.targetDistance}km' 
-          : '';
-      
+      final distanceText =
+          exercise.targetDistance != null ? '${exercise.targetDistance}km' : '';
+
       return [timeText, distanceText].where((s) => s.isNotEmpty).join(' × ');
     }
   }
 }
 
 class AddPlannedExerciseDialog extends StatefulWidget {
-  final List<Map<String, dynamic>> exercises;
+  final String userId;
   final Function(PlannedExercise) onExerciseAdded;
 
   const AddPlannedExerciseDialog({
-    required this.exercises,
+    required this.userId,
     required this.onExerciseAdded,
     super.key,
   });
 
   @override
-  State<AddPlannedExerciseDialog> createState() => _AddPlannedExerciseDialogState();
+  State<AddPlannedExerciseDialog> createState() =>
+      _AddPlannedExerciseDialogState();
 }
 
 class _AddPlannedExerciseDialogState extends State<AddPlannedExerciseDialog> {
@@ -263,9 +264,11 @@ class _AddPlannedExerciseDialogState extends State<AddPlannedExerciseDialog> {
       unitType: selectedExercise!['unitType'],
       targetSets: isRepsWeight ? int.tryParse(_setsController.text) : null,
       targetReps: isRepsWeight ? int.tryParse(_repsController.text) : null,
-      targetWeight: isRepsWeight ? double.tryParse(_weightController.text) : null,
+      targetWeight:
+          isRepsWeight ? double.tryParse(_weightController.text) : null,
       targetTime: !isRepsWeight ? int.tryParse(_timeController.text) : null,
-      targetDistance: !isRepsWeight ? double.tryParse(_distanceController.text) : null,
+      targetDistance:
+          !isRepsWeight ? double.tryParse(_distanceController.text) : null,
     );
 
     widget.onExerciseAdded(plannedExercise);
@@ -276,8 +279,7 @@ class _AddPlannedExerciseDialogState extends State<AddPlannedExerciseDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(maxHeight: 500, maxWidth: 400),
-        padding: const EdgeInsets.all(24),
+        constraints: const BoxConstraints(maxHeight: 600, maxWidth: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,36 +287,27 @@ class _AddPlannedExerciseDialogState extends State<AddPlannedExerciseDialog> {
             Text(
               'Add Exercise to Plan',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<Map<String, dynamic>>(
-              decoration: const InputDecoration(
-                labelText: 'Select Exercise',
-                border: OutlineInputBorder(),
+            Expanded(
+              child: ExerciseSelector(
+                onExerciseSelected: (exercise) {
+                  setState(() {
+                    selectedExercise = exercise;
+                    // Clear all fields when exercise changes
+                    _setsController.clear();
+                    _repsController.clear();
+                    _weightController.clear();
+                    _timeController.clear();
+                    _distanceController.clear();
+                  });
+                },
               ),
-              value: selectedExercise,
-              items: widget.exercises.map((exercise) {
-                return DropdownMenuItem(
-                  value: exercise,
-                  child: Text(exercise['name']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedExercise = value;
-                  // Clear all fields when exercise changes
-                  _setsController.clear();
-                  _repsController.clear();
-                  _weightController.clear();
-                  _timeController.clear();
-                  _distanceController.clear();
-                });
-              },
             ),
-            const SizedBox(height: 16),
             if (selectedExercise != null) ...[
+              const SizedBox(height: 16),
               Text(
                 'Target Values:',
                 style: Theme.of(context).textTheme.titleMedium,

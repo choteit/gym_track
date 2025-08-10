@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/exercise_service.dart';
-import '../../users/services/auth_service.dart';
+import 'exercise_selector.dart';
 import '../../utils/number_helper.dart';
 
 class AddExerciseDialog extends StatefulWidget {
@@ -16,9 +15,6 @@ class AddExerciseDialog extends StatefulWidget {
 }
 
 class _AddExerciseDialogState extends State<AddExerciseDialog> {
-  final _exerciseService = ExerciseService();
-  final _authService = AuthService();
-  List<Map<String, dynamic>> _exercises = [];
   Map<String, dynamic>? _selectedExercise;
   final _formKey = GlobalKey<FormState>();
 
@@ -27,15 +23,7 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
   final _weightController = TextEditingController();
   final _distanceController = TextEditingController();
   final _timeController = TextEditingController();
-
-  // Ajouter un nouveau contrôleur pour les sets
   final _setsController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadExercises();
-  }
 
   @override
   void dispose() {
@@ -47,14 +35,16 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
     super.dispose();
   }
 
-  Future<void> _loadExercises() async {
-    final userId = _authService.currentUser?.uid;
-    if (userId != null) {
-      final exercises = await _exerciseService.getAllExercises(userId);
-      setState(() {
-        _exercises = exercises;
-      });
-    }
+  void _onExerciseSelected(Map<String, dynamic> exercise) {
+    setState(() {
+      _selectedExercise = exercise;
+      // Reset des contrôleurs
+      _repsController.clear();
+      _weightController.clear();
+      _distanceController.clear();
+      _timeController.clear();
+      _setsController.clear();
+    });
   }
 
   void _submitForm() {
@@ -79,145 +69,181 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 600, maxWidth: 400),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
                 'Add exercise',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            if (_selectedExercise == null) ...[
+              Expanded(
+                child: ExerciseSelector(
+                  onExerciseSelected: _onExerciseSelected,
+                  title: 'Select an exercise',
+                  showCustomIndicator: true,
                 ),
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<Map<String, dynamic>>(
-                value: _selectedExercise,
-                items: _exercises.map((exercise) {
-                  final name = exercise['name'] as String;
-                  return DropdownMenuItem(
-                    value: exercise,
-                    child: Row(
+            ] else ...[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name[0].toUpperCase() + name.substring(1)),
-                        if (exercise['isCustom'] == true) ...[
-                          const SizedBox(width: 8),
-                          Icon(Icons.person,
-                              color: Theme.of(context).colorScheme.secondary,
-                              size: 16),
-                        ],
+                        // Afficher l'exercice sélectionné
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _selectedExercise!['name'][0].toUpperCase() +
+                                      _selectedExercise!['name'].substring(1),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              if (_selectedExercise!['isCustom'] == true)
+                                const Icon(Icons.person,
+                                    color: Colors.blue, size: 16),
+                              IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedExercise = null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Champs de saisie selon le type d'exercice
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                if (_selectedExercise!['unitType'] ==
+                                    'reps_weight') ...[
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _setsController,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Sets',
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          validator: (value) =>
+                                              value?.isEmpty ?? true
+                                                  ? 'Enter number of sets'
+                                                  : null,
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 8),
+                                        child: Text(
+                                          'x',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _repsController,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Reps',
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          validator: (value) =>
+                                              value?.isEmpty ?? true
+                                                  ? 'Enter number of reps'
+                                                  : null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    controller: _weightController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Weight (kg)',
+                                    ),
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    validator: (value) {
+                                      if (value?.isEmpty ?? true)
+                                        return 'Enter weight';
+                                      if (!NumberHelper.isValidDouble(value!)) {
+                                        return 'Enter a valid number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ] else ...[
+                                  TextFormField(
+                                    controller: _distanceController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Distance (km)',
+                                    ),
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    validator: (value) {
+                                      if (value?.isEmpty ?? true)
+                                        return 'Enter distance';
+                                      if (!NumberHelper.isValidDouble(value!)) {
+                                        return 'Enter a valid number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    controller: _timeController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Time (minutes)',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) => value?.isEmpty ?? true
+                                        ? 'Enter time'
+                                        : null,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedExercise = value;
-                    // Reset des contrôleurs
-                    _repsController.clear();
-                    _weightController.clear();
-                    _distanceController.clear();
-                    _timeController.clear();
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Select exercise',
+                  ),
                 ),
-                validator: (value) =>
-                    value == null ? 'Please select an exercise' : null,
               ),
-              const SizedBox(height: 16),
-              if (_selectedExercise != null) ...[
-                if (_selectedExercise!['unitType'] == 'reps_weight') ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _setsController,
-                          decoration: const InputDecoration(
-                            labelText: 'Sets',
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: (value) => value?.isEmpty ?? true
-                              ? 'Enter number of sets'
-                              : null,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          'x',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _repsController,
-                          decoration: const InputDecoration(
-                            labelText: 'Reps',
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: (value) => value?.isEmpty ?? true
-                              ? 'Enter number of reps'
-                              : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _weightController,
-                    decoration: const InputDecoration(
-                      labelText: 'Weight (kg)',
-                      hintText: 'Ex: 75,5 ou 75.5',
-                    ),
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) return 'Enter weight';
-                      if (!NumberHelper.isValidDouble(value!)) {
-                        return 'Enter a valid number (ex: 75,5)';
-                      }
-                      return null;
-                    },
-                  ),
-                ] else ...[
-                  TextFormField(
-                    controller: _distanceController,
-                    decoration: const InputDecoration(
-                      labelText: 'Distance (km)',
-                      hintText: 'Ex: 5,2 ou 5.2',
-                    ),
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) return 'Enter distance';
-                      if (!NumberHelper.isValidDouble(value!)) {
-                        return 'Enter a valid number (ex: 5,2)';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _timeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Time (minutes)',
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Enter time' : null,
-                  ),
-                ],
-              ],
-              const SizedBox(height: 16),
-              Row(
+            ],
+            // Boutons d'action
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
@@ -225,14 +251,15 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
                     child: const Text('Cancel'),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _submitForm,
-                    child: const Text('Add'),
-                  ),
+                  if (_selectedExercise != null)
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      child: const Text('Add'),
+                    ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

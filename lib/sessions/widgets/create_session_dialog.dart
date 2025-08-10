@@ -3,7 +3,6 @@ import '../services/session_service.dart';
 import 'session_detail_page.dart';
 import '../../workout_plans/services/workout_plan_service.dart';
 import '../../workout_plans/entities/workout_plan.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateSessionDialog extends StatefulWidget {
   final String userId;
