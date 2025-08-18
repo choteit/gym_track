@@ -4,11 +4,12 @@ class SessionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String collectionName = 'sessions';
 
-  Future<String> createSession(String userId, DateTime date) async {
+  Future<String> createSession(String userId, DateTime date, {String? workoutPlanId}) async {
     final docRef = await _firestore.collection('sessions').add({
       'userId': userId,
       'date': date,
       'exercises': [],
+      'workoutPlanId': workoutPlanId,
     });
     return docRef.id;
   }
